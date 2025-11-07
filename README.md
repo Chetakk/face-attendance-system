@@ -142,3 +142,6 @@ The database is managed by Supabase and the schema is defined in `supabase/migra
 *   `npm run build`: Builds the application for production.
 *   `npm run lint`: Lints the codebase using ESLint.
 *   `npm run preview`: Serves the production build locally.
+
+
+*fixed
