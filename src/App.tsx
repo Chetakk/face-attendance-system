@@ -1,18 +1,21 @@
-import { useState } from 'react';
-import { UserPlus, CheckCircle, BarChart3 } from 'lucide-react';
-import UserRegistration from './components/UserRegistration';
-import AttendanceMarker from './components/AttendanceMarker';
-import AttendanceDashboard from './components/AttendanceDashboard';
+import { useState, Suspense, lazy } from "react";
+import { UserPlus, CheckCircle, BarChart3 } from "lucide-react";
+import UserRegistration from "./components/UserRegistration";
+import ErrorBoundary from "./ErrorBoundary";
+import "./index.css"; // ✅ Extra safe import in case you want scoped classes
 
-type Tab = 'register' | 'attendance' | 'dashboard';
+const AttendanceMarker = lazy(() => import("./components/AttendanceMarker"));
+const AttendanceDashboard = lazy(() => import("./components/AttendanceDashboard"));
+
+type Tab = "register" | "attendance" | "dashboard";
 
 function App() {
-  const [activeTab, setActiveTab] = useState<Tab>('attendance');
+  const [activeTab, setActiveTab] = useState<Tab>("attendance");
 
   const tabs = [
-    { id: 'register' as Tab, label: 'Register User', icon: UserPlus },
-    { id: 'attendance' as Tab, label: 'Mark Attendance', icon: CheckCircle },
-    { id: 'dashboard' as Tab, label: 'Dashboard', icon: BarChart3 },
+    { id: "register" as Tab, label: "Register User", icon: UserPlus },
+    { id: "attendance" as Tab, label: "Mark Attendance", icon: CheckCircle },
+    { id: "dashboard" as Tab, label: "Dashboard", icon: BarChart3 },
   ];
 
   return (
@@ -23,10 +26,12 @@ function App() {
             Face Recognition Attendance System
           </h1>
           <p className="text-gray-600">
-            Secure and automated attendance tracking using facial recognition technology
+            Secure and automated attendance tracking using facial recognition
+            technology
           </p>
         </header>
 
+        {/* --- Navigation Tabs --- */}
         <div className="mb-6">
           <nav className="flex gap-2 bg-white rounded-lg shadow-sm p-2">
             {tabs.map((tab) => {
@@ -37,8 +42,8 @@ function App() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${
                     activeTab === tab.id
-                      ? 'bg-blue-600 text-white shadow-md'
-                      : 'text-gray-600 hover:bg-gray-100'
+                      ? "bg-blue-600 text-white shadow-md"
+                      : "text-gray-600 hover:bg-gray-100"
                   }`}
                 >
                   <Icon size={20} />
@@ -49,10 +54,21 @@ function App() {
           </nav>
         </div>
 
+        {/* --- Main Content --- */}
         <main>
-          {activeTab === 'register' && <UserRegistration />}
-          {activeTab === 'attendance' && <AttendanceMarker />}
-          {activeTab === 'dashboard' && <AttendanceDashboard />}
+          <ErrorBoundary>
+            <Suspense
+              fallback={
+                <div className="text-center text-gray-600 py-12">
+                  Loading component...
+                </div>
+              }
+            >
+              {activeTab === "register" && <UserRegistration />}
+              {activeTab === "attendance" && <AttendanceMarker />}
+              {activeTab === "dashboard" && <AttendanceDashboard />}
+            </Suspense>
+          </ErrorBoundary>
         </main>
 
         <footer className="mt-12 text-center text-gray-500 text-sm">

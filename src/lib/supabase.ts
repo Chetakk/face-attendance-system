@@ -21,3 +21,5 @@ export interface AttendanceRecord {
   created_at: string;
   users?: User;
 }
+
+
